@@ -1,0 +1,47 @@
+<div class="col-md-4">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title"><%= course.name %></h3>
+    </div>
+    <%= image_tag course.image, class: "course-image" %>
+    <div class="panel-body">
+      <p><%= course.description %></p>
+      <p>
+        <b>Prerequisites: </b>
+        <%= course.prerequisites %>
+      </p>
+      <p>
+        <b>Locations: </b>
+        <% course.locations.each do |location| %>
+          <%= link_to location_path(location) do %>
+            <%= location.code %>
+            <% end %>
+          <% if location != course.locations.last %>, <% end %>
+        <% end %>
+      </p>
+      <p>
+        <b>Categories: </b>
+        <% course.categories.each do |category| %>
+          <%= link_to category_path(category) do %>
+            <%= category.name %>
+          <% end %>
+          <% if category != course.categories.last %>, <% end %>
+        <% end %>
+      </p>
+      <p class = "small">Created: <%= time_since(course.updated_at) %> ago</p>
+      <% if logged_in? %>
+        <div class="button-panel">
+          <div class="pull-left">
+            <%= link_to votes_path(is_positive: true, course_id: course.id, coordinator_id: current_coordinator.id), method: :post, class: 'btn btn-success', title: 'Positive vote' do %>
+              &uarr; <%= Vote.where(course_id: course.id, is_positive: true).count %>
+            <% end %>
+
+            <%= link_to votes_path(is_positive: false, course_id: course.id, coordinator_id: current_coordinator.id), method: :post, class: 'btn btn-danger', title: 'Negative vote' do %>
+              &darr; <%= Vote.where(course_id: course.id, is_positive: false).count %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
